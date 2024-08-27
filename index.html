@@ -12,8 +12,11 @@
             <div class="row"><h1 id="title" class="text-center">[Placeholder Title]</h1></div>
             <div class="row">
                 <div id="checklist" class="col">
-
-                    <a id="checklistItem-active" class="list-group list-group-item-action ps-2 pt-2 mb-2">
+                    <a id="checklistItem-active" class="list-group list-group-item-action ps-2 pt-2 mb-2" data-bs-toggle="modal" data-bs-target="#task1">
+                        <h5>Task Header</h5>
+                        <p>Description</p>
+                    </a>
+                    <a id="checklistItem" class="list-group list-group-item-action ps-2 pt-2 mb-2" data-bs-toggle="modal" data-bs-target="#task2">
                         <h5>Task Header</h5>
                         <p>Description</p>
                     </a>
@@ -21,15 +24,43 @@
                         <h5>Task Header</h5>
                         <p>Description</p>
                     </a>
-                    <a id="checklistItem" class="list-group list-group-item-action ps-2 pt-2 mb-2">
-                        <h5>Task Header</h5>
-                        <p>Description</p>
-                    </a>
-
                 </div>
-                <div id="task-expanded-view" class="col">
-
+                <div class="col"></div>
+                
+                <!-- Task 1 -->
+                <div class="modal fade" id="task1" tabindex="-1" aria-labelledby="task1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content" id="modalBackground">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Task #1</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">TEST</div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
+                <!-- Task 2 -->
+                <div class="modal fade" id="task2" tabindex="-1" aria-labelledby="task2" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content" id="modalBackground">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Task #2</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">TEST</div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>

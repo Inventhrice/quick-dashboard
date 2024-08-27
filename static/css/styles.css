@@ -1,6 +1,6 @@
-body {
+body, #modalBackground {
     background-color: #556b2f;
-    color: #C6E298;
+    color: #DFFFAA;
 }
 
 #checklistItem {
