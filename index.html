@@ -10,22 +10,28 @@
     <body>
         <div class="container">
             <div class="row"><h1 id="title" class="text-center">[Placeholder Title]</h1></div>
+            <div class="row"><input type="file" id="input"><button type="submit" onclick="loadJSON()"></button></div>
             <div class="row">
                 <div id="checklist" class="col">
-                    <a id="checklistItem-active" class="list-group list-group-item-action ps-2 pt-2 mb-2" data-bs-toggle="modal" data-bs-target="#task1">
-                        <h5>Task Header</h5>
-                        <p>Description</p>
-                    </a>
-                    <a id="checklistItem" class="list-group list-group-item-action ps-2 pt-2 mb-2" data-bs-toggle="modal" data-bs-target="#task2">
-                        <h5>Task Header</h5>
-                        <p>Description</p>
-                    </a>
-                    <a id="checklistItem" class="list-group list-group-item-action ps-2 pt-2 mb-2">
-                        <h5>Task Header</h5>
-                        <p>Description</p>
-                    </a>
+                    <div id="checklistItem" class="list-group list-group-item-action ps-2 pt-2 mb-2" data-bs-toggle="modal" data-bs-target="#task1">
+                        <h5>Title</h5>
+                        <p>Assignee</p>
+                    </div>
+                    <div id="checklistItem" class="list-group list-group-item-action ps-2 pt-2 mb-2" data-bs-toggle="modal" data-bs-target="#task2">
+                        <h5>Title</h5>
+                        <p>Assignee</p>
+                    </div>
+                    <div id="checklistItem" class="list-group list-group-item-action ps-2 pt-2 mb-2">
+                        <h5>Title</h5>
+                        <p>Assignee</p>
+                    </div>
                 </div>
-                <div class="col"></div>
+
+                <!-- TIMER [Future Implementation] -->
+                <div class="col">
+                    
+
+                </div>
                 
                 <!-- Task 1 -->
                 <div class="modal fade" id="task1" tabindex="-1" aria-labelledby="task1" aria-hidden="true">
@@ -38,7 +44,6 @@
                             <div class="modal-body">TEST</div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
                             </div>
                         </div>
                     </div>
@@ -55,7 +60,6 @@
                             <div class="modal-body">TEST</div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
                             </div>
                         </div>
                     </div>
