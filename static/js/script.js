@@ -1,6 +1,3 @@
-const title = ""
-const listTasks = []
-
 function loadJSON(){
     const selectedFile = document.getElementById("input").files[0];
     const reader = new FileReader();
@@ -18,8 +15,6 @@ function loadJSON(){
         },
         false,
     );
-    //console.log(title)
-    //console.log(listTasks)
 }
 
 function loadJSONHelper_loadTitle(title){
@@ -51,7 +46,7 @@ function updateTasks(tasks){
         // Code for the modal that pops up when clicking on the task
         
         detailedViewTaskTemplate = `<div class="modal fade" id="taskID" tabindex="-1" aria-labelledby="taskID" aria-hidden="true">`.replaceAll("ID", theTaskInQuestion.id)
-        detailedViewTaskTemplate += `<div class="modal-dialog">\n<div class="modalBackground modal-content">\n<div class="modal-header">`
+        detailedViewTaskTemplate += `<div class="modal-dialog modal-dialog-centered">\n<div class="modalBackground modal-content">\n<div class="modal-header">`
         detailedViewTaskTemplate += `<h1 class="modal-title fs-5" id="modalLabel">TASKTITLE</h1>`.replaceAll("TASKTITLE", theTaskInQuestion.taskTitle)
         detailedViewTaskTemplate += `<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body">`
         detailedViewTaskTemplate += `<p><i>Assigned to: </i>` + theTaskInQuestion.assignee + `</p>`
