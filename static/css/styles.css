@@ -3,12 +3,12 @@ body, #modalBackground {
     color: #DFFFAA;
 }
 
-#checklistItem {
+.checklistItem {
     background-color: #a1dd39;
     color: #0F591B;
 }
 
-#checklistItem-active {
+.checklistItem-active {
     background-color: #3d4f1e;
     color: #C6E298;
 }
