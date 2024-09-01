@@ -1,4 +1,8 @@
-body, #modalBackground {
+body {
+    background-color: #263238;
+    color: #DFFFAA;
+}
+#modalBackground {
     background-color: #556b2f;
     color: #DFFFAA;
 }
