@@ -1,0 +1,26 @@
+{
+    "title": "House Moving Party!",
+    "tasks": [
+        {
+            "id": 1,
+            "taskTitle": "Getting Pizza",
+            "assignee": "Alice",
+            "description": "From the pizza place, get:\n- 1 large pepporoni\n- 1 small veg",
+            "complete": false
+        },
+        {
+            "id": 2,
+            "taskTitle": "Pack the pillows",
+            "assignee": "Gunther",
+            "description": "Make sure you place the charger where you can find it",
+            "complete": false
+        },
+        {
+            "id": 3,
+            "taskTitle": "Pay last month of rent",
+            "assignee": "Oliver",
+            "description": "",
+            "complete": true
+        }
+    ]
+}
