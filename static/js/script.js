@@ -34,6 +34,7 @@ function loadJSONHelper_loadTasks(tasks){
         theTaskInQuestion = tasks[i]
         console.debug(theTaskInQuestion)
    
+        // Code for addding the tasks that you see initally
         checklistTemplate = `<div id="checklist-ID" class="checklistItem list-group list-group-item-action ps-2 pt-2 mb-2" data-bs-toggle="modal" data-bs-target="#taskID">`
         checklistTemplate = checklistTemplate.replaceAll("ID", theTaskInQuestion.id);
 
@@ -41,14 +42,21 @@ function loadJSONHelper_loadTasks(tasks){
                 + "\n<p>" + theTaskInQuestion.assignee + "</p>" + "\n</div>\n"
 
         document.getElementById("checklist").innerHTML += checklistTemplate;
+
+        // Code for the modal that pops up when clicking on the task
         
         completeTaskTemplate = `<div class="modal fade" id="taskID" tabindex="-1" aria-labelledby="taskID" aria-hidden="true">`.replaceAll("ID", theTaskInQuestion.id)
-        completeTaskTemplate += `<div class="modal-dialog">\n<div class="modal-content" id="modalBackground">\n<div class="modal-header">`
+        completeTaskTemplate += `<div class="modal-dialog">\n<div class="modalBackground modal-content">\n<div class="modal-header">`
         completeTaskTemplate += `<h1 class="modal-title fs-5" id="modalLabel">TASKTITLE</h1>`.replaceAll("TASKTITLE", theTaskInQuestion.taskTitle)
         completeTaskTemplate += `<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>`
 
-        //if this is empty, write No descirption provided, also allow new lines here
-        completeTaskTemplate += `<div class="modal-body">TASKDESCRIPTION</div>`.replaceAll("TASKDESCRIPTION", theTaskInQuestion.description)
+        if(theTaskInQuestion.description == ""){
+            completeTaskTemplate += `<div class="modal-body">TASKDESCRIPTION</div>`.replaceAll("TASKDESCRIPTION", "<p class=\"fst-italic\">No Description Provided</p>")
+        }
+        else{
+            completeTaskTemplate += `<div class="modal-body">TASKDESCRIPTION</div>`.replaceAll("TASKDESCRIPTION", theTaskInQuestion.description).replaceAll("\n","<br>")
+        }
+
         completeTaskTemplate += `<div class="modal-footer">\n<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>\n</div>\n</div>\n</div>\n</div>`
 
         document.getElementById("listTasks").innerHTML += completeTaskTemplate;
