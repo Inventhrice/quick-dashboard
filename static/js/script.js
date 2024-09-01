@@ -14,7 +14,7 @@ function loadJSON(){
             console.debug(obj);
 
             loadJSONHelper_loadTitle(obj.title);
-            loadJSONHelper_loadTasks(obj.tasks);
+            updateTasks(obj.tasks);
         },
         false,
     );
@@ -26,7 +26,7 @@ function loadJSONHelper_loadTitle(title){
     document.getElementById("applicationTitle").innerHTML = title;
 }
 
-function loadJSONHelper_loadTasks(tasks){
+function updateTasks(tasks){
     console.debug(tasks.length)
     document.getElementById("checklist").innerHTML = "";
     document.getElementById("listTasks").innerHTML = "";
@@ -34,14 +34,26 @@ function loadJSONHelper_loadTasks(tasks){
         theTaskInQuestion = tasks[i]
         console.debug(theTaskInQuestion)
    
-        // Code for addding the tasks that you see initally
-        checklistTemplate = `<div id="checklist-ID" class="checklistItem list-group list-group-item-action ps-2 pt-2 mb-2" data-bs-toggle="modal" data-bs-target="#taskID">`
-        checklistTemplate = checklistTemplate.replaceAll("ID", theTaskInQuestion.id);
+        if(theTaskInQuestion.complete == false){
+            // Code for addding the tasks that you see initally
+            checklistTemplate = `<div id="checklist-ID" class="checklistItem list-group list-group-item-action ps-2 pt-2 mb-2" data-bs-toggle="modal" data-bs-target="#taskID">`
+            checklistTemplate = checklistTemplate.replaceAll("ID", theTaskInQuestion.id);
 
-        checklistTemplate += "\n<h5>" + theTaskInQuestion.taskTitle + "</h5>"
-                + "\n<p>" + theTaskInQuestion.assignee + "</p>" + "\n</div>\n"
+            checklistTemplate += "\n<h5>" + theTaskInQuestion.taskTitle + "</h5>"
+                    + "\n<p>" + theTaskInQuestion.assignee + "</p>" + "\n</div>\n"
 
-        document.getElementById("checklist").innerHTML += checklistTemplate;
+            document.getElementById("checklist").innerHTML += checklistTemplate;
+        }
+
+        else{
+            completedTaskTemplate = `<div id="completed-ID" class="checklistItem list-group list-group-item-action ps-2 pt-2 mb-2" data-bs-toggle="modal" data-bs-target="#taskID">`
+            completedTaskTemplate = completedTaskTemplate.replaceAll("ID", theTaskInQuestion.id);
+
+            completedTaskTemplate += "\n<h5>" + theTaskInQuestion.taskTitle + "</h5>"
+                    + "\n<p>" + theTaskInQuestion.assignee + "</p>" + "\n</div>\n"
+
+            document.getElementById("completedTasksLists").innerHTML += completedTaskTemplate;
+        }
 
         // Code for the modal that pops up when clicking on the task
         
