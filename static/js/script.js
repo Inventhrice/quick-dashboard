@@ -38,7 +38,7 @@ function updateTasks(tasks){
         summaryViewTaskTemplate = summaryViewTaskTemplate.replaceAll("ID", theTaskInQuestion.id);
 
         summaryViewTaskTemplate += "\n<h5>" + theTaskInQuestion.taskTitle + "</h5>"
-                + "\n<p>" + theTaskInQuestion.assignee + "</p>" + "\n</div>\n"
+                + "\n<i class=\"bi bi-person\"> " + theTaskInQuestion.assignee + "</i>\n</div>\n"
 
         if(theTaskInQuestion.complete == false){
             document.getElementById("checklist").innerHTML += summaryViewTaskTemplate;
