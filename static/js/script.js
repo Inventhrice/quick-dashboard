@@ -1,3 +1,4 @@
+let listOfTasks = {};
 function loadJSON(){
     const selectedFile = document.getElementById("input").files[0];
     const reader = new FileReader();
@@ -7,26 +8,27 @@ function loadJSON(){
         "load",
         () => {
             // this will then display a text file
-            const obj = JSON.parse(reader.result);
+            obj = JSON.parse(reader.result);
             console.debug(obj);
-
-            loadJSONHelper_loadTitle(obj.title);
-            updateTasks(obj.tasks);
+            listOfTasks = obj.tasks;
+            document.getElementById("applicationTitle").innerHTML = obj.title;
+            updateTasks();
         },
         false,
     );
 }
 
-function loadJSONHelper_loadTitle(title){
-    document.getElementById("applicationTitle").innerHTML = title;
+function taskStateUpdated(){
+    // add checkbox event listener
+    updateTasks();
 }
 
-function updateTasks(tasks){
-    console.debug(tasks.length)
+function updateTasks(){
+    console.debug(listOfTasks.length)
     document.getElementById("checklist").innerHTML = "";
     document.getElementById("listTasks").innerHTML = "";
-    for(let i = 0; i < tasks.length; i++){
-        theTaskInQuestion = tasks[i]
+    for(let i = 0; i < listOfTasks.length; i++){
+        theTaskInQuestion = listOfTasks[i]
         console.debug(theTaskInQuestion)
    
         summaryViewTaskTemplate = `<div id="checklist-ID" class="checklistItem list-group list-group-item-action ps-2 pt-2 mb-2" data-bs-toggle="modal" data-bs-target="#taskID">`
