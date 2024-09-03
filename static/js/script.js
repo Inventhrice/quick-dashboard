@@ -1,5 +1,6 @@
 let listOfTasks = {};
-function loadJSON(){
+//Comment out this code if you want to run this locally
+/* function loadJSON(){
     const selectedFile = document.getElementById("input").files[0];
     const reader = new FileReader();
     reader.readAsText(selectedFile);
@@ -16,7 +17,7 @@ function loadJSON(){
         },
         false,
     );
-}
+} */
 
 function taskStateUpdated(){
     // add checkbox event listener
