@@ -5,6 +5,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,20 +14,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type task struct {
-	id          string `json:"id"`
-	title       string `json:"title"`
-	description string `json:"description"`
-	assignee    string `json:"assignee"`
-	complete    bool   `json: "complete"`
+type Task struct {
+	Id          float64 `json:"id"`
+	Title       string  `json:"taskTitle"`
+	Description string  `json:"description"`
+	Assignee    string  `json:"assignee"`
+	Complete    bool    `json:"complete"`
 }
 
-var tasksDB []task
+type Tasks struct {
+	Title string `json:"title"`
+	Tasks []Task `json:"tasks"`
+}
+
+var tasksDB []Task
 var serverLogging *log.Logger
 
 // Add task
 func addTask(c *gin.Context) {
-	var newTask task
+	var newTask Task
 
 	if err := c.BindJSON(&newTask); err != nil {
 		c.AbortWithStatus(http.StatusNotAcceptable)
@@ -45,8 +51,24 @@ func writeToFile() {
 	}()
 }
 
-func initTaskDB() {
-	// insert code to read from file to put into all tasks
+func initTaskDB(dataFilePath string) {
+	dataFromFile, err := os.Open(dataFilePath)
+	if err != nil {
+		panic(err)
+	} else {
+		defer dataFromFile.Close()
+
+		var data Tasks
+
+		decoder := json.NewDecoder(dataFromFile)
+		if err = decoder.Decode(&data); err != nil {
+			panic(err)
+		}
+
+		fmt.Println(data)
+		tasksDB = data.Tasks
+	}
+
 }
 
 func updateTask(c *gin.Context) {
@@ -76,13 +98,22 @@ func serveCSS(c *gin.Context) {
 	serveFiles(c, "text/css", "./static/css/")
 }
 
+func getFileName() string {
+	return "./testData/prettifiedData.json"
+}
+
 func main() {
-	initTaskDB()
+	pathToFile := getFileName()
+
+	initTaskDB(pathToFile)
 
 	router := gin.Default()
 	router.GET("/", servePage)
 	router.GET("/static/css/:name", serveCSS)
 	router.GET("/static/js/:name", serveScripts)
+	router.GET("/data.json", func(c *gin.Context) {
+		serveFiles(c, "application/json", pathToFile)
+	})
 	router.Run("localhost:8080")
 
 	fmt.Println("Server is running!")
