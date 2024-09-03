@@ -1,6 +1,23 @@
 let listOfTasks = {};
+
+async function loadJSON(){
+    const url = "/data.json"
+    try {
+        const response = await fetch(url)
+        console.log(response)
+        if(!response.ok){
+            throw new Error(`Response Status: ${response.status}`);
+        }
+        document.getElementById("applicationTitle").innerHTML = response.json.title;
+        listOfTasks = response.json.tasks;
+    }
+    catch (error){
+        console.error(error.message);
+    }
+}
+
 //Comment out this code if you want to run this locally
-/* function loadJSON(){
+/* function loadJSON_local(){
     const selectedFile = document.getElementById("input").files[0];
     const reader = new FileReader();
     reader.readAsText(selectedFile);
