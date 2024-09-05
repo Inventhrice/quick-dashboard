@@ -22,12 +22,12 @@ type Task struct {
 	Complete    bool    `json:"complete"`
 }
 
-type Tasks struct {
+type TaskJSON struct {
 	Title string `json:"title"`
 	Tasks []Task `json:"tasks"`
 }
 
-var tasksDB []Task
+var tasksDB TaskJSON
 var serverLogging *log.Logger
 
 // Add task
@@ -40,7 +40,7 @@ func addTask(c *gin.Context) {
 	}
 
 	// Add the new album to the slice.
-	tasksDB = append(tasksDB, newTask)
+	tasksDB.Tasks = append(tasksDB.Tasks, newTask)
 	c.IndentedJSON(http.StatusCreated, newTask)
 }
 
@@ -58,7 +58,7 @@ func initTaskDB(dataFilePath string) {
 	} else {
 		defer dataFromFile.Close()
 
-		var data Tasks
+		var data TaskJSON
 
 		decoder := json.NewDecoder(dataFromFile)
 		if err = decoder.Decode(&data); err != nil {
@@ -66,7 +66,7 @@ func initTaskDB(dataFilePath string) {
 		}
 
 		fmt.Println(data)
-		tasksDB = data.Tasks
+		tasksDB = data
 	}
 
 }
@@ -104,7 +104,6 @@ func getFileName() string {
 
 func main() {
 	pathToFile := getFileName()
-
 	initTaskDB(pathToFile)
 
 	router := gin.Default()

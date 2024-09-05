@@ -1,15 +1,19 @@
 let listOfTasks = {};
 
 async function loadJSON(){
-    const url = "/data.json"
+    const url = window.location.href + "data.json"
     try {
-        const response = await fetch(url)
-        console.log(response)
-        if(!response.ok){
-            throw new Error(`Response Status: ${response.status}`);
-        }
-        document.getElementById("applicationTitle").innerHTML = response.json.title;
-        listOfTasks = response.json.tasks;
+        await fetch(url).then(response => {
+            if(!response.ok){
+                throw new Error(`Response Status: ${response.status}`);
+            }
+            return response.json()
+        }).then(json => {
+            console.debug(json)
+            document.getElementById("applicationTitle").innerHTML = json.title    
+            listOfTasks = json.tasks
+            updateTasks();
+        })
     }
     catch (error){
         console.error(error.message);
