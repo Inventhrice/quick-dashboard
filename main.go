@@ -34,6 +34,7 @@ type TaskJSON struct {
 var tasksDB TaskJSON
 var serverLogging *log.Logger
 var pathToFile string
+var pathToQRCode = "static/qr.png"
 
 // minutes between writing the files
 const duration = 5
@@ -124,7 +125,7 @@ func serveFiles(c *gin.Context, contenttype string, path string) {
 }
 
 func servePage(c *gin.Context) {
-	serveFiles(c, "text/html", "./")
+	serveFiles(c, "text/html", "./static/")
 }
 
 func serveScripts(c *gin.Context) {
@@ -178,6 +179,12 @@ func main() {
 	//initalize the Tasks variable from the filepath provided
 	initTaskDB()
 
+	err := qrcode.WriteFile(serverIP, qrcode.Medium, 256, pathToQRCode)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Wrote server URL to a qr code")
+
 	router := gin.Default()
 
 	// Serve the index html page
@@ -188,8 +195,12 @@ func main() {
 	router.GET("/static/js/:name", serveScripts)
 
 	// Return the data stored server side
-	router.GET("/data.json", func(c *gin.Context) {
+	router.GET("/static/data.json", func(c *gin.Context) {
 		serveFiles(c, "application/json", pathToFile)
+	})
+
+	router.GET("/static/qr.png", func(c *gin.Context) {
+		serveFiles(c, "image/png", pathToQRCode)
 	})
 
 	router.PATCH("/task/:id", updateTask)
@@ -200,11 +211,6 @@ func main() {
 
 	fmt.Println("Writing to \"data.json\"") //replace with serverlogging
 
-	err := qrcode.WriteFile(serverIP, qrcode.Medium, 256, "qr.png")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Wrote server URL to a qr code")
 	router.Run(serverIP)
 
 }

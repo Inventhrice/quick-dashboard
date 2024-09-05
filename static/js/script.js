@@ -1,7 +1,7 @@
 let listOfTasks = {};
 
 async function loadJSON(){
-    const url = window.location.href + "data.json"
+    const url = window.location.href + "static/data.json"
     try {
         await fetch(url).then(response => {
             if(!response.ok){
