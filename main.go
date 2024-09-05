@@ -8,11 +8,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/skip2/go-qrcode"
 )
 
 type Task struct {
@@ -140,11 +143,37 @@ func getFileName() string {
 
 // To be implemented: get the actual IP of the machine
 func getServerIP() string {
-	return "localhost:80"
+	listoFIPs, err := net.InterfaceAddrs()
+	if err != nil {
+		panic(err)
+	}
+
+	ipserver, _, err := net.ParseCIDR(listoFIPs[0].String())
+	ipOfServer := ipserver.String()
+	port := 80
+
+	userInput := ""
+	fmt.Printf("Use default value \"%s:%d\"? [Y/N]: ", ipOfServer, port)
+	fmt.Scan(&userInput)
+
+	for strings.ToLower(userInput) != "n" && strings.ToLower(userInput) != "y" {
+		fmt.Printf("Please enter a valid input.\nUse default value \"%s:%d\"? [Y/N]: ", ipOfServer, port)
+		fmt.Scan(&userInput)
+	}
+
+	if strings.ToLower(userInput) == "n" {
+		fmt.Print("Enter the IP address: ")
+		fmt.Scan(&ipOfServer)
+		fmt.Print("Enter port number: ")
+		fmt.Scan(&port)
+	}
+
+	return fmt.Sprintf("%s:%d", ipOfServer, port)
 }
 
 func main() {
 	pathToFile = getFileName()
+	serverIP := getServerIP()
 
 	//initalize the Tasks variable from the filepath provided
 	initTaskDB()
@@ -171,6 +200,11 @@ func main() {
 
 	fmt.Println("Writing to \"data.json\"") //replace with serverlogging
 
-	router.Run(getServerIP())
+	err := qrcode.WriteFile(serverIP, qrcode.Medium, 256, "qr.png")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Wrote server URL to a qr code")
+	router.Run(serverIP)
 
 }
