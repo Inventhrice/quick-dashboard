@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,8 +30,15 @@ type TaskJSON struct {
 
 var tasksDB TaskJSON
 var serverLogging *log.Logger
+var pathToFile string
 
-// Add task
+// minutes between writing the files
+const duration = 5
+
+// Add Task:
+// This function adds a task to the database (tasksDB) via a POST request from the user
+// It replies with a 201 if created, along with the new task details
+// It replies with a 406 if not created, with the error message
 func addTask(c *gin.Context) {
 	var newTask Task
 
@@ -44,15 +52,28 @@ func addTask(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, newTask)
 }
 
-func writeToFile() {
+func writeTaskDBToFile() {
+	//pathToFile
+}
+
+func writeToFileAsync(done <-chan bool) {
+	ticker := time.NewTicker(duration * time.Minute)
 	go func() {
-		//insert code to write allTasks to file
-		// sleep for 5 minutes, make a hash for file and DB, if diff, write to file
+		for {
+			select {
+			case <-done:
+				fmt.Println("Stopping ticker") //replace with serverlogging
+				ticker.Stop()
+				return
+			case <-ticker.C:
+				writeTaskDBToFile()
+			}
+		}
 	}()
 }
 
-func initTaskDB(dataFilePath string) {
-	dataFromFile, err := os.Open(dataFilePath)
+func initTaskDB() {
+	dataFromFile, err := os.Open(pathToFile)
 	if err != nil {
 		panic(err)
 	} else {
@@ -65,7 +86,7 @@ func initTaskDB(dataFilePath string) {
 			panic(err)
 		}
 
-		fmt.Println(data)
+		//fmt.Println(data) //replace with serverlogging
 		tasksDB = data
 	}
 
@@ -98,23 +119,45 @@ func serveCSS(c *gin.Context) {
 	serveFiles(c, "text/css", "./static/css/")
 }
 
+// To be implemented in more detail
+// For now, default value is in the test data, but we will prompt the user for the location of the file
 func getFileName() string {
 	return "./testData/prettifiedData.json"
 }
 
+// To be implemented: get the actual IP of the machine
+func getServerIP() string {
+	return "localhost:80"
+}
+
 func main() {
-	pathToFile := getFileName()
-	initTaskDB(pathToFile)
+	pathToFile = getFileName()
+
+	//initalize the Tasks variable from the filepath provided
+	initTaskDB()
 
 	router := gin.Default()
+
+	// Serve the index html page
 	router.GET("/", servePage)
+
+	// Default routes for the static stuff
 	router.GET("/static/css/:name", serveCSS)
 	router.GET("/static/js/:name", serveScripts)
+
+	// Return the data stored server side
 	router.GET("/data.json", func(c *gin.Context) {
 		serveFiles(c, "application/json", pathToFile)
 	})
-	router.Run("localhost:8080")
 
-	fmt.Println("Server is running!")
+	router.PATCH("/task/:id", updateTask)
+	router.POST("/task/", addTask)
+
+	c := make(chan bool)
+	writeToFileAsync(c)
+
+	fmt.Println("Writing to \"data.json\"") //replace with serverlogging
+
+	router.Run(getServerIP())
 
 }
