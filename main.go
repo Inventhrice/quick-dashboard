@@ -53,7 +53,19 @@ func addTask(c *gin.Context) {
 }
 
 func writeTaskDBToFile() {
-	//pathToFile
+	output, err := json.Marshal(tasksDB)
+	if err != nil {
+		panic(err) //replace with serverLogging
+	}
+	f, err := os.Create(pathToFile)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	_, err = f.Write(output)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func writeToFileAsync(done <-chan bool) {
@@ -67,6 +79,7 @@ func writeToFileAsync(done <-chan bool) {
 				return
 			case <-ticker.C:
 				writeTaskDBToFile()
+				fmt.Println("Wrote to file!") //replace with serverlogging
 			}
 		}
 	}()
