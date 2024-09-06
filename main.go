@@ -39,23 +39,6 @@ var pathToQRCode = "static/qr.png"
 // minutes between writing the files
 const duration = 5
 
-// Add Task:
-// This function adds a task to the database (tasksDB) via a POST request from the user
-// It replies with a 201 if created, along with the new task details
-// It replies with a 406 if not created, with the error message
-func addTask(c *gin.Context) {
-	var newTask Task
-
-	if err := c.BindJSON(&newTask); err != nil {
-		c.AbortWithStatus(http.StatusNotAcceptable)
-		return
-	}
-
-	// Add the new album to the slice.
-	tasksDB.Tasks = append(tasksDB.Tasks, newTask)
-	c.IndentedJSON(http.StatusCreated, newTask)
-}
-
 func writeTaskDBToFile() {
 	output, err := json.Marshal(tasksDB)
 	if err != nil {
@@ -108,11 +91,6 @@ func initTaskDB() {
 	}
 
 }
-
-func updateTask(c *gin.Context) {
-
-}
-
 func serveFiles(c *gin.Context, contenttype string, path string) {
 	filename := path + c.Param("name")
 	_, err := os.Open(filename)
@@ -172,6 +150,35 @@ func getServerIP() string {
 	return fmt.Sprintf("%s:%d", ipOfServer, port)
 }
 
+// Add Task:
+// This function adds a task to the database (tasksDB) via a POST request from the user
+// It replies with a 201 if created, along with the new task details
+// It replies with a 406 if not created, with the error message
+func addTask(c *gin.Context) {
+	var newTask Task
+
+	if err := c.BindJSON(&newTask); err != nil {
+		c.AbortWithStatus(http.StatusNotAcceptable)
+		return
+	}
+
+	// Add the new album to the slice.
+	tasksDB.Tasks = append(tasksDB.Tasks, newTask)
+	c.IndentedJSON(http.StatusCreated, newTask)
+}
+
+func updateTask(c *gin.Context) {
+	var newTask Task
+
+	if err := c.BindJSON(&newTask); err != nil {
+		c.AbortWithStatus(http.StatusNotAcceptable)
+		return
+	}
+
+	fmt.Println(newTask)
+	c.Status(http.StatusOK)
+}
+
 func main() {
 	pathToFile = getFileName()
 	serverIP := getServerIP()
@@ -206,8 +213,8 @@ func main() {
 	router.PATCH("/task/:id", updateTask)
 	router.POST("/task/", addTask)
 
-	c := make(chan bool)
-	writeToFileAsync(c)
+	// c := make(chan bool)
+	// writeToFileAsync(c)
 
 	fmt.Println("Writing to \"data.json\"") //replace with serverlogging
 
