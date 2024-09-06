@@ -69,8 +69,31 @@
                             <h1 class="modal-title fs-5" id="exampleModalLabel">Task #1</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">TEST</div>
+                        <div class="modal-body">
+                            <form>
+                                <div>
+                                    <label for="assignee" class="form-label"><i>Assigned to:</i></label>
+                                    <input type="text" class="form-control" id="assignee" list="listOfUsers" placeholder="Enter a person's name">
+                                    <datalist id="listOfUsers">
+                                        <option value="Person 1"></option>
+                                        <option value="Person 2"></option>
+                                        <option value="Person 3"></option>
+                                        <option value="Person 4"></option>
+                                    </datalist>                                    
+                                </div>
+                                <div>
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea class="form-control" rows="3" id="description">Default Values</textarea>
+                                </div>
+                                <div>
+                                    <input type="checkbox" class="form-check-input" id="completed" checked>
+                                    <label for="completed" class="form-check-label">Complete</label>
+                                </div>
+                            </form>
+
+                        </div>
                         <div class="modal-footer">
+                            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Save Changes</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
