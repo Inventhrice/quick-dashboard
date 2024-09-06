@@ -40,9 +40,29 @@ async function loadJSON(){
     );
 } */
 
-function taskStateUpdated(){
-    // add checkbox event listener
-    updateTasks();
+function taskAdd(){
+
+}
+
+function getTaskFromFormID(id){
+    const form = document.getElementById("taskform-" + id)
+
+}
+
+function taskStateUpdated(id){
+    const subElement = "taskform-" + id + "-"
+
+    let data = {
+        "id": id,
+        "taskTitle": document.getElementById(subElement + "taskTitle").value,
+        "assignee": document.getElementById(subElement + "assignee").value,
+        "description": document.getElementById(subElement + "description").innerHTML,
+        "complete": document.getElementById(subElement + "completed").checked
+    }
+
+    console.log(data)
+
+    //updateTasks();
 }
 
 function updateTasks(){
