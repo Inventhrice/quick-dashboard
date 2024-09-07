@@ -14,7 +14,7 @@ body {
     color: #0F591B;
 }
 
-.checklistItem-active {
+.input-group-text, .form-control, .checklistItem-active {
     background-color: #3d4f1e;
     color: #C6E298;
 }

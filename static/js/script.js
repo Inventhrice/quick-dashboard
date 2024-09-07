@@ -137,14 +137,14 @@ function refreshTaskList(){
         detailedViewTaskTemplate 
             = `<div class="modal fade" id="task{{ID}}" tabindex="-1" aria-labelledby="task{{ID}}" aria-hidden="true">\n<div class="modal-dialog modal-dialog-centered">\n<div class="modalBackground modal-content">\n<form id="taskform-{{ID}}">`
         // Modal Header Code
-            + `\n<div class="modal-header">\n<textarea class="modal-title fs-5" row="1" id="taskform-{{ID}}-taskTitle" placeholder="Enter title of task">` 
+            + `\n<div class="modal-header">\n<input type="text" class="form-control" id="taskform-{{ID}}-taskTitle" placeholder="Enter title of task" value="` 
         
-        detailedViewTaskTemplate += theTaskInQuestion.taskTitle + `</textarea>\n<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>\n</div>\n`
+        detailedViewTaskTemplate += theTaskInQuestion.taskTitle + `">\n<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>\n</div>\n`
         // Assignee code
-            + `<div class="modal-body">\n<div>\n<label for="taskform-{{ID}}-assignee" class="form-label"><i>Assigned to:</i></label>\n<input type="text" class="form-control" id="taskform-{{ID}}-assignee" list="listOfUsers" placeholder="Enter a person's name" value="` 
+            + `<div class="modal-body">\n<div class="input-group">\n<span id="taskform-{{ID}}-assignee-desc" for="taskform-{{ID}}-assignee" class="input-group-text"><i>Assigned to:</i></span>\n<input aria-described-by="taskform-{{ID}}-assignee-desc" type="text" class="form-control" id="taskform-{{ID}}-assignee" list="listOfUsers" placeholder="Enter a person's name" value="` 
             + theTaskInQuestion.assignee + `"><datalist id="listOfUsers">\n`
             + getListOfPeople()
-            + `</datalist>\n</div>\n<div>\n<label for="taskform-{{ID}}-description" class="form-label">Description</label>\n<textarea class="form-control" rows="3" id="taskform-{{ID}}-description">`
+            + `</datalist>\n</div>\n<div>\n<label for="taskform-{{ID}}-description" class="form-label fs-5">Description:</label>\n<textarea class="form-control" rows="3" id="taskform-{{ID}}-description">`
 
         if(theTaskInQuestion.description == ""){
             detailedViewTaskTemplate += `No Description Provided`
