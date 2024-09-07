@@ -2,6 +2,7 @@ let listOfTasks = {};
 
 async function loadJSON(){
     const url = window.location.href + "static/data.json"
+    console.log(url)
     try {
         await fetch(url).then(response => {
             if(!response.ok){
@@ -12,7 +13,7 @@ async function loadJSON(){
             console.debug(json)
             document.getElementById("applicationTitle").innerHTML = json.title    
             listOfTasks = json.tasks
-            updateTasks();
+            refreshTaskList();
         })
     }
     catch (error){
@@ -49,7 +50,7 @@ function getTaskFromFormID(id){
 
 }
 
-function taskStateUpdated(id){
+function updateTask(id){
     const subElement = "taskform-" + id + "-"
 
     let data = {
@@ -59,13 +60,24 @@ function taskStateUpdated(id){
         "description": document.getElementById(subElement + "description").innerHTML,
         "complete": document.getElementById(subElement + "completed").checked
     }
+    console.debug(data)
 
-    console.log(data)
+    fetch((window.location.href + "task/" + id), {
+        method: "PATCH",
+        body: JSON.stringify(data),
+        headers: {"Content-type": "application/json"}
+    }).then((response) => response.json()).then((json) => console.debug(json))
 
-    //updateTasks();
+    let index = listOfTasks.findIndex(task => task.id === id)
+
+    if(index != -1){
+        listOfTasks[index] = data
+    }
+
+    refreshTaskList();
 }
 
-function updateTasks(){
+function refreshTaskList(){
     console.debug(listOfTasks.length)
     document.getElementById("checklist").innerHTML = "";
     document.getElementById("listTasks").innerHTML = "";
@@ -89,20 +101,36 @@ function updateTasks(){
 
         // Code for the modal that pops up when clicking on the task
         
-        detailedViewTaskTemplate = `<div class="modal fade" id="taskID" tabindex="-1" aria-labelledby="taskID" aria-hidden="true">`.replaceAll("ID", theTaskInQuestion.id)
-        detailedViewTaskTemplate += `<div class="modal-dialog modal-dialog-centered">\n<div class="modalBackground modal-content">\n<div class="modal-header">`
-        detailedViewTaskTemplate += `<h1 class="modal-title fs-5" id="modalLabel">TASKTITLE</h1>`.replaceAll("TASKTITLE", theTaskInQuestion.taskTitle)
-        detailedViewTaskTemplate += `<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body">`
-        detailedViewTaskTemplate += `<p><i>Assigned to: </i>` + theTaskInQuestion.assignee + `</p>`
+        detailedViewTaskTemplate 
+            = `<div class="modal fade" id="task{{ID}}" tabindex="-1" aria-labelledby="task{{ID}}" aria-hidden="true">\n<div class="modal-dialog modal-dialog-centered">\n<div class="modalBackground modal-content">\n<form id="taskform-{{ID}}">`
+        // Modal Header Code
+            + `\n<div class="modal-header">\n<textarea class="modal-title fs-5" row="1" id="taskform-{{ID}}-taskTitle">` 
+        
+        detailedViewTaskTemplate += theTaskInQuestion.taskTitle + `</textarea>\n<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>\n</div>\n`
+        // Assignee code
+            + `<div class="modal-body">\n<div>\n<label for="taskform-{{ID}}-assignee" class="form-label"><i>Assigned to:</i></label>\n<input type="text" class="form-control" id="taskform-{{ID}}-assignee" list="listOfUsers" placeholder="Enter a person's name" value="` + theTaskInQuestion.assignee + `"><datalist id="listOfUsers">\n`;
+        
+        const assignees = listOfTasks.map(task => task.assignee);
+        for(let j = 0; j < assignees.length; j++){
+            
+            detailedViewTaskTemplate += `<option value="` + assignees[j] + `"></option>\n`
+        }
+        
+        detailedViewTaskTemplate += `</datalist>\n</div>\n<div>\n<label for="taskform-{{ID}}-description" class="form-label">Description</label>\n<textarea class="form-control" rows="3" id="taskform-{{ID}}-description">`
         if(theTaskInQuestion.description == ""){
-            detailedViewTaskTemplate += `<p class="fst-italic">No Description Provided</p>`
+            detailedViewTaskTemplate += `No Description Provided`
         }
         else{
-            detailedViewTaskTemplate += theTaskInQuestion.description.replaceAll("\n","<br>")
+            detailedViewTaskTemplate += theTaskInQuestion.description
         }
+        detailedViewTaskTemplate += `</textarea>\n</div><div><input type="checkbox" class="form-check-input" id="taskform-{{ID}}-completed"`
 
-        detailedViewTaskTemplate += `</div>\n<div class="modal-footer">\n<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>\n</div>\n</div>\n</div>\n</div>`
+        if(theTaskInQuestion.complete) detailedViewTaskTemplate += " checked"
 
+        detailedViewTaskTemplate += `>\n<label for="taskform-1-completed" class="form-check-label">Complete</label>\n</div>\n</div>\n<div class="modal-footer">\n<button class="btn btn-success" data-bs-dismiss="modal" onclick="updateTask({{ID}})">Save Changes</button>`
+                                 + `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>\n</div>\n</form>\n</div>\n</div>\n</div>`
+
+        detailedViewTaskTemplate = detailedViewTaskTemplate.replaceAll("{{ID}}", theTaskInQuestion.id)
         document.getElementById("listTasks").innerHTML += detailedViewTaskTemplate;
     }
     
