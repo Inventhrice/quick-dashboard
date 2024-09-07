@@ -31,27 +31,41 @@ type TaskJSON struct {
 	Tasks []Task `json:"tasks"`
 }
 
-var tasksDB TaskJSON
-var serverLogging *log.Logger
-var pathToFile string
+var (
+	InfoLogger  *log.Logger
+	ErrorLogger *log.Logger
+	tasksDB     TaskJSON
+	pathToFile  string
+)
+
 var pathToQRCode = "static/qr.png"
 
 // minutes between writing the files
 const duration = 5
 
+func initLogging() {
+	file, err := os.OpenFile("log.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	InfoLogger = log.New(file, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+	ErrorLogger = log.New(file, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+}
+
 func writeTaskDBToFile() {
 	output, err := json.Marshal(tasksDB)
 	if err != nil {
-		panic(err) //replace with serverLogging
+		ErrorLogger.Println(err)
 	}
 	f, err := os.Create(pathToFile)
 	if err != nil {
-		panic(err)
+		ErrorLogger.Println(err)
 	}
 	defer f.Close()
 	_, err = f.Write(output)
 	if err != nil {
-		panic(err)
+		ErrorLogger.Println(err)
 	}
 }
 
@@ -61,12 +75,12 @@ func writeToFileAsync(done <-chan bool) {
 		for {
 			select {
 			case <-done:
-				fmt.Println("Stopping ticker") //replace with serverlogging
+				InfoLogger.Println("Stopping ticker") //replace with serverlogging
 				ticker.Stop()
 				return
 			case <-ticker.C:
 				writeTaskDBToFile()
-				fmt.Println("Wrote to file!") //replace with serverlogging
+				InfoLogger.Println("Wrote to file!") //replace with serverlogging
 			}
 		}
 	}()
@@ -83,10 +97,11 @@ func initTaskDB() {
 
 		decoder := json.NewDecoder(dataFromFile)
 		if err = decoder.Decode(&data); err != nil {
-			panic(err)
+			ErrorLogger.Println(err)
 		}
 
-		//fmt.Println(data) //replace with serverlogging
+		InfoLogger.Println("Imported Tasks DB:")
+		InfoLogger.Println(data) //replace with serverlogging
 		tasksDB = data
 	}
 
@@ -95,6 +110,7 @@ func serveFiles(c *gin.Context, contenttype string, path string) {
 	filename := path + c.Param("name")
 	_, err := os.Open(filename)
 	if err != nil {
+		ErrorLogger.Println(err)
 		c.JSON(404, gin.H{"error": err.Error()})
 	} else {
 		c.Header("Content-Type", contenttype)
@@ -114,17 +130,30 @@ func serveCSS(c *gin.Context) {
 	serveFiles(c, "text/css", "./static/css/")
 }
 
-// To be implemented in more detail
-// For now, default value is in the test data, but we will prompt the user for the location of the file
 func getFileName() string {
-	return "./testData/prettifiedData.json"
+	var userInput string
+	yn := "n"
+	for strings.ToLower(yn) != "y" {
+		fmt.Println("Please enter the filepath to grab data from: ")
+		fmt.Scan(&userInput)
+
+		fmt.Printf("Confirm getting data from \"%s\"? [Y/N]", userInput)
+		fmt.Scan(&yn)
+
+		for strings.ToLower(yn) != "n" && strings.ToLower(yn) != "y" {
+			fmt.Printf("Please enter a valid input.\nConfirm getting data from \"%s\"? [Y/N]: ", userInput)
+			fmt.Scan(&yn)
+		}
+	}
+
+	return userInput
 }
 
 // To be implemented: get the actual IP of the machine
 func getServerIP() string {
 	listoFIPs, err := net.InterfaceAddrs()
 	if err != nil {
-		panic(err)
+		ErrorLogger.Println(err)
 	}
 
 	ipserver, _, err := net.ParseCIDR(listoFIPs[0].String())
@@ -158,9 +187,13 @@ func addTask(c *gin.Context) {
 	var newTask Task
 
 	if err := c.BindJSON(&newTask); err != nil {
+		ErrorLogger.Println(err)
 		c.AbortWithStatus(http.StatusNotAcceptable)
 		return
 	}
+
+	InfoLogger.Println("Task Added:")
+	InfoLogger.Println(newTask)
 
 	// Add the new album to the slice.
 	tasksDB.Tasks = append(tasksDB.Tasks, newTask)
@@ -171,11 +204,13 @@ func updateTask(c *gin.Context) {
 	var newTask Task
 
 	if err := c.BindJSON(&newTask); err != nil {
+		ErrorLogger.Println(err)
 		c.AbortWithStatus(http.StatusNotAcceptable)
 		return
 	}
 
-	fmt.Println(newTask)
+	InfoLogger.Println("Task Updated:")
+	InfoLogger.Println(newTask)
 
 	for i := 0; i < len(tasksDB.Tasks); i++ {
 		if tasksDB.Tasks[i].Id == newTask.Id {
@@ -187,19 +222,15 @@ func updateTask(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, newTask)
 }
 
-func main() {
-	pathToFile = getFileName()
-	serverIP := getServerIP()
-
-	//initalize the Tasks variable from the filepath provided
-	initTaskDB()
-
+func generateQRCode(serverIP string) {
 	err := qrcode.WriteFile(serverIP, qrcode.Medium, 256, pathToQRCode)
 	if err != nil {
-		panic(err)
+		ErrorLogger.Println(err)
 	}
-	fmt.Println("Wrote server URL to a qr code")
+	InfoLogger.Println("Wrote server URL to a QR code at " + pathToQRCode)
+}
 
+func initRouter() *gin.Engine {
 	router := gin.Default()
 
 	// Serve the index html page
@@ -221,10 +252,25 @@ func main() {
 	router.PATCH("/task/:id", updateTask)
 	router.POST("/task/", addTask)
 
+	return router
+}
+
+func main() {
+	initLogging()
+	pathToFile = getFileName()
+	serverIP := getServerIP()
+
+	//initalize the Tasks variable from the filepath provided
+	initTaskDB()
+
+	generateQRCode(serverIP)
+
+	router := initRouter()
+
 	c := make(chan bool)
 	writeToFileAsync(c)
 
-	fmt.Println("Writing to \"data.json\"") //replace with serverlogging
+	InfoLogger.Println("Writing to " + pathToFile) //replace with serverlogging
 
 	router.Run(serverIP)
 
