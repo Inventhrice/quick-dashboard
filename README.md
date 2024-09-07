@@ -5,6 +5,17 @@ A dashboard that doesnt need (or appear to need) a full web server stack. Someth
 
 Right down to who is eyes on a situation and who is doing background work; impromptu signage etc.
 
+## Screenshots
+### On a Computer
+![image](https://github.com/user-attachments/assets/258e6b23-532d-4f5e-9a30-9181192ef476)
+![image](https://github.com/user-attachments/assets/4f7419e2-7de6-4bce-801b-e887e168c51f)
+
+### On a Phone
+![image](https://github.com/user-attachments/assets/77b69e47-e1ff-4c26-9df4-49deeadebb9d)
+![image](https://github.com/user-attachments/assets/a62b3d71-36ad-4d8c-9361-1dfea2ab17e8)
+
+
+
 ## Usage
 ### Pre-built
 1. Download the relavent zipfile from the Releases Tab
