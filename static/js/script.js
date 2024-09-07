@@ -1,8 +1,8 @@
 let listOfTasks = {};
 
 async function loadJSON(){
-    const url = window.location.href + "static/data.json"
-    console.log(url)
+    const url = (window.location.href + "static/data.json").replace("?", "")
+
     try {
         await fetch(url).then(response => {
             if(!response.ok){
@@ -41,16 +41,39 @@ async function loadJSON(){
     );
 } */
 
-function taskAdd(){
-
+function getHighestIDNum(){
+    ret = -1
+    for(let i = 0; i < listOfTasks.length; i++){
+        if(ret < listOfTasks[i].id) ret = listOfTasks[i].id
+    }
+    return ret
 }
 
-function getTaskFromFormID(id){
-    const form = document.getElementById("taskform-" + id)
-
+function addTask(){
+    console.debug("ENTERING: addTask()")
+    const subElement = "taskform-addTask-"
+    let id = getHighestIDNum() + 1
+    console.log("Add task ID: " + id)
+    let data = {
+        "id": id,
+        "taskTitle": document.getElementById(subElement + "taskTitle").value,
+        "assignee": document.getElementById(subElement + "assignee").value,
+        "description": document.getElementById(subElement + "description").innerHTML,
+        "complete": document.getElementById(subElement + "completed").checked
+    }
+    console.debug(data)
+    
+    listOfTasks.push(data)
+    fetch((window.location.href + "task/"), {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {"Content-type": "application/json"}
+    }).then((response) => response.json()).then(refreshTaskList())
 }
 
 function updateTask(id){
+    console.debug("ENTERING: updateTask(" + id + ")")
+
     const subElement = "taskform-" + id + "-"
 
     let data = {
@@ -72,13 +95,25 @@ function updateTask(id){
         method: "PATCH",
         body: JSON.stringify(data),
         headers: {"Content-type": "application/json"}
-    }).then((response) => response.json()).then((json) => console.debug(json)).then(refreshTaskList())
+    }).then((response) => response.json()).then(refreshTaskList())
+}
+
+function getListOfPeople(){
+    let returnVal = ""
+    const assignees = listOfTasks.map(task => task.assignee);
+    for(let j = 0; j < assignees.length; j++){
+        
+        returnVal += `<option value="` + assignees[j] + `"></option>\n`
+    }
+    return returnVal
 }
 
 function refreshTaskList(){
+    console.debug("ENTERING: refreshTaskList()")
     console.debug(listOfTasks.length)
     document.getElementById("checklist").innerHTML = "";
     document.getElementById("listTasks").innerHTML = "";
+    document.getElementById("completedTasksLists").innerHTML = "";
     for(let i = 0; i < listOfTasks.length; i++){
         theTaskInQuestion = listOfTasks[i]
         console.debug(theTaskInQuestion)
@@ -102,19 +137,15 @@ function refreshTaskList(){
         detailedViewTaskTemplate 
             = `<div class="modal fade" id="task{{ID}}" tabindex="-1" aria-labelledby="task{{ID}}" aria-hidden="true">\n<div class="modal-dialog modal-dialog-centered">\n<div class="modalBackground modal-content">\n<form id="taskform-{{ID}}">`
         // Modal Header Code
-            + `\n<div class="modal-header">\n<textarea class="modal-title fs-5" row="1" id="taskform-{{ID}}-taskTitle">` 
+            + `\n<div class="modal-header">\n<textarea class="modal-title fs-5" row="1" id="taskform-{{ID}}-taskTitle" placeholder="Enter title of task">` 
         
         detailedViewTaskTemplate += theTaskInQuestion.taskTitle + `</textarea>\n<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>\n</div>\n`
         // Assignee code
-            + `<div class="modal-body">\n<div>\n<label for="taskform-{{ID}}-assignee" class="form-label"><i>Assigned to:</i></label>\n<input type="text" class="form-control" id="taskform-{{ID}}-assignee" list="listOfUsers" placeholder="Enter a person's name" value="` + theTaskInQuestion.assignee + `"><datalist id="listOfUsers">\n`;
-        
-        const assignees = listOfTasks.map(task => task.assignee);
-        for(let j = 0; j < assignees.length; j++){
-            
-            detailedViewTaskTemplate += `<option value="` + assignees[j] + `"></option>\n`
-        }
-        
-        detailedViewTaskTemplate += `</datalist>\n</div>\n<div>\n<label for="taskform-{{ID}}-description" class="form-label">Description</label>\n<textarea class="form-control" rows="3" id="taskform-{{ID}}-description">`
+            + `<div class="modal-body">\n<div>\n<label for="taskform-{{ID}}-assignee" class="form-label"><i>Assigned to:</i></label>\n<input type="text" class="form-control" id="taskform-{{ID}}-assignee" list="listOfUsers" placeholder="Enter a person's name" value="` 
+            + theTaskInQuestion.assignee + `"><datalist id="listOfUsers">\n`
+            + getListOfPeople()
+            + `</datalist>\n</div>\n<div>\n<label for="taskform-{{ID}}-description" class="form-label">Description</label>\n<textarea class="form-control" rows="3" id="taskform-{{ID}}-description">`
+
         if(theTaskInQuestion.description == ""){
             detailedViewTaskTemplate += `No Description Provided`
         }
@@ -132,5 +163,11 @@ function refreshTaskList(){
         document.getElementById("listTasks").innerHTML += detailedViewTaskTemplate;
     }
     
+    document.getElementById("listOfUsers-addTask").innerHTML = getListOfPeople()
 
 }
+
+document.addEventListener("DOMContentLoaded", function(){
+    if(listOfTasks.length == null) loadJSON();
+    else refreshTaskList();
+});
