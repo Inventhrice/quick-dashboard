@@ -62,19 +62,17 @@ function updateTask(id){
     }
     console.debug(data)
 
-    fetch((window.location.href + "task/" + id), {
-        method: "PATCH",
-        body: JSON.stringify(data),
-        headers: {"Content-type": "application/json"}
-    }).then((response) => response.json()).then((json) => console.debug(json))
-
     let index = listOfTasks.findIndex(task => task.id === id)
 
     if(index != -1){
         listOfTasks[index] = data
     }
 
-    refreshTaskList();
+    fetch((window.location.href + "task/" + id), {
+        method: "PATCH",
+        body: JSON.stringify(data),
+        headers: {"Content-type": "application/json"}
+    }).then((response) => response.json()).then((json) => console.debug(json)).then(refreshTaskList())
 }
 
 function refreshTaskList(){

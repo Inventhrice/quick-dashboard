@@ -176,7 +176,15 @@ func updateTask(c *gin.Context) {
 	}
 
 	fmt.Println(newTask)
-	c.Status(http.StatusOK)
+
+	for i := 0; i < len(tasksDB.Tasks); i++ {
+		if tasksDB.Tasks[i].Id == newTask.Id {
+			tasksDB.Tasks[i] = newTask
+			i = len(tasksDB.Tasks)
+		}
+	}
+
+	c.IndentedJSON(http.StatusCreated, newTask)
 }
 
 func main() {
@@ -213,8 +221,8 @@ func main() {
 	router.PATCH("/task/:id", updateTask)
 	router.POST("/task/", addTask)
 
-	// c := make(chan bool)
-	// writeToFileAsync(c)
+	c := make(chan bool)
+	writeToFileAsync(c)
 
 	fmt.Println("Writing to \"data.json\"") //replace with serverlogging
 
