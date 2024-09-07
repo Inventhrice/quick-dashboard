@@ -27,7 +27,7 @@
                     <div class="row">
                         <div class="row">
                             <div class="col"><h3>Active Tasks</h3></div>
-                            <div class="col-1"><button class="btn btn-success">+</button></div>
+                            <div class="col-1"><button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button></div>
 
                         </div>
                         
@@ -121,7 +121,7 @@
                                 </div>
                                 <div>
                                     <label for="taskform-2-description" class="form-label">Description</label>
-                                    <textarea class="form-control" rows="3" id="taskform-2-description">Default Values</textarea>
+                                    <textarea class="form-control" rows="3" id="taskform-2-description" placeholder="Enter description here"></textarea>
                                 </div>
                                 <div>
                                     <input type="checkbox" class="form-check-input" id="taskform-2-completed" checked>
@@ -159,7 +159,7 @@
                                 </div>
                                 <div>
                                     <label for="taskform-3-description" class="form-label">Description</label>
-                                    <textarea class="form-control" rows="3" id="taskform-3-description">Default Values</textarea>
+                                    <textarea class="form-control" rows="3" id="taskform-3-description" placeholder="Enter description here"></textarea>
                                 </div>
                                 <div>
                                     <input type="checkbox" class="form-check-input" id="taskform-3-completed" checked>
@@ -172,6 +172,39 @@
                             </div>
                         </form>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modalBackground">
+                    <form id="taskform-addTask">
+                        <div class="modal-header">
+                            <textarea class="modal-title fs-5" row="1" id="taskform-addTask-taskTitle">Task #1</textarea>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <label for="taskform-addTask-assignee" class="form-label"><i>Assigned to:</i></label>
+                                <input type="text" class="form-control" id="taskform-addTask-assignee" list="listOfUsers" placeholder="Enter a person's name">
+                                <datalist id="listOfUsers-addTask">
+                                </datalist>                                    
+                            </div>
+                            <div>
+                                <label for="taskform-addTask-description" class="form-label">Description</label>
+                                <textarea class="form-control" rows="3" id="taskform-addTask-description" placeholder="Enter description here"></textarea>
+                            </div>
+                            <div>
+                                <input type="checkbox" class="form-check-input" id="taskform-addTask-completed" checked>
+                                <label for="taskform-addTask-completed" class="form-check-label">Complete</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-success" data-bs-dismiss="modal" onclick="addTask()">Add Task</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
