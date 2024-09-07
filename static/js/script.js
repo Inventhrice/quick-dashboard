@@ -64,11 +64,12 @@ function addTask(){
     console.debug(data)
     
     listOfTasks.push(data)
-    fetch((window.location.href + "task/"), {
+    fetch((window.location.href + "task"), {
         method: "POST",
         body: JSON.stringify(data),
         headers: {"Content-type": "application/json"}
-    }).then((response) => response.json()).then(refreshTaskList())
+    }).then((response) => response.json()).then(() => refreshTaskList())
+    .catch(error => console.error('Error:', error))
 }
 
 function updateTask(id){

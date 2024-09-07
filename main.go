@@ -137,7 +137,7 @@ func getFileName() string {
 		fmt.Println("Please enter the filepath to grab data from: ")
 		fmt.Scan(&userInput)
 
-		fmt.Printf("Confirm getting data from \"%s\"? [Y/N]", userInput)
+		fmt.Printf("Confirm getting data from \"%s\"? [Y/N]: ", userInput)
 		fmt.Scan(&yn)
 
 		for strings.ToLower(yn) != "n" && strings.ToLower(yn) != "y" {
