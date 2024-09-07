@@ -256,6 +256,7 @@ func initRouter() *gin.Engine {
 }
 
 func main() {
+	gin.SetMode(gin.ReleaseMode)
 	initLogging()
 	pathToFile = getFileName()
 	serverIP := getServerIP()
@@ -272,6 +273,7 @@ func main() {
 
 	InfoLogger.Println("Writing to " + pathToFile) //replace with serverlogging
 
+	fmt.Println("Running server on " + serverIP)
 	router.Run(serverIP)
 
 }
