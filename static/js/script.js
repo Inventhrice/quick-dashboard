@@ -80,7 +80,7 @@ function updateTask(id){
         "id": id,
         "taskTitle": document.getElementById(subElement + "taskTitle").value,
         "assignee": document.getElementById(subElement + "assignee").value,
-        "description": document.getElementById(subElement + "description").innerHTML,
+        "description": document.getElementById(subElement + "description").value,
         "complete": document.getElementById(subElement + "completed").checked
     }
     console.debug(data)
