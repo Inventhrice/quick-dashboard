@@ -1,0 +1,26 @@
+body {
+    font-family:  "Roboto", sans-serif, "Times New Roman", serif;
+    background-color: #263238;
+    color: #DFFFAA;
+}
+
+.modalBackground {
+    background-color: #556b2f;
+    color: #DFFFAA;
+}
+
+.checklistItem {
+    background-color: #a1dd39;
+    color: #0F591B;
+}
+
+.input-group-text, .form-control, .checklistItem-active {
+    background-color: #3d4f1e;
+    color: #C6E298;
+}
+
+.btn-success {
+    --bs-btn-bg: #a1dd39;
+    --bs-btn-border-color: #a1dd39;
+    --bs-btn-color: #0F591B
+}

@@ -1,0 +1,26 @@
+{
+    "title": "PLACEHOLDER",
+    "tasks": [
+        {
+            "id": 1,
+            "taskTitle": "TITLE1",
+            "assignee": "PERSON1",
+            "description": "test description of lots of words",
+            "complete": false
+        },
+        {
+            "id": 2,
+            "taskTitle": "TITLE2",
+            "assignee": "PERSON2",
+            "description": "test description of lots of words",
+            "complete": false
+        },
+        {
+            "id": 3,
+            "taskTitle": "TITLE3",
+            "assignee": "PERSON1",
+            "description": "test description of lots of words",
+            "complete": true
+        }
+    ]
+}
