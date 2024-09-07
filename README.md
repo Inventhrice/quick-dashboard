@@ -6,7 +6,21 @@ A dashboard that doesnt need (or appear to need) a full web server stack. Someth
 Right down to who is eyes on a situation and who is doing background work; impromptu signage etc.
 
 ## Usage
-TBD
+### Pre-built
+1. Download the relavent zipfile from the Releases Tab
+2. Unzip and run the executable as is.
+
+## Build
+1. Install golang
+2. Clone the repo
+3. Build the project by running `go build` in the repository directory
+4. Run the executable.
+
+It is important that you keep the static folder and main.go where they are, as they are necessary for each other.
+
+
+Feedback is always appriciated!
+
 
 ## License
 This project is licensed under the GNU GPLv3 with the Common Clause v1 added.
