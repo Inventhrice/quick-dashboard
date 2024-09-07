@@ -100,7 +100,7 @@ function updateTask(id){
 
 function getListOfPeople(){
     let returnVal = ""
-    const assignees = listOfTasks.map(task => task.assignee);
+    const assignees = [...new Set([...(listOfTasks.map(task => task.assignee)).values()])];
     for(let j = 0; j < assignees.length; j++){
         
         returnVal += `<option value="` + assignees[j] + `"></option>\n`
