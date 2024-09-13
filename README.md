@@ -10,7 +10,7 @@ Right down to who is eyes on a situation and who is doing background work; impro
 2. Upon running the executable, the program will prompt you for a filepath on where to fetch the data from (examples of which can be found under testData in this repo.
 3. It will find the local IP of the device on the network and ask if that is okay to use. Typing 'N' will prompt for an IP address and a port number to use.
 4. A webserver will run using the address provided and generate a QR code under `static/qr.png`. which can be used to quickly access the webserver from other devices.
-5. Logging can be found udner log.txt, which contains INFO, DEBUG, and ERROR messages for the webserver.
+5. Logging can be found under log.txt, which contains INFO, DEBUG, and ERROR messages for the webserver.
 
 ## Screenshots
 ### On a Computer
