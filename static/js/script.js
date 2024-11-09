@@ -73,9 +73,9 @@ function addTask(){
 }
 
 function updateTask(id){
-    console.debug("ENTERING: updateTask(" + id + ")")
+    console.debug(`ENTERING: updateTask(${id})`)
 
-    const subElement = "taskform-" + id + "-"
+    const subElement = `taskform-${id}-`
 
     let data = {
         "id": id,
