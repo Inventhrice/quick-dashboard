@@ -160,7 +160,7 @@ function refreshTaskList(){
 								</div>
 							</div>
 							<div class="modal-footer">
-								<button class="btn btn-success" data-bs-dismiss="modal" onclick="updateTask${theTaskInQuestion.id}">Save Changes</button>
+								<button class="btn btn-success" data-bs-dismiss="modal" onclick="updateTask(${theTaskInQuestion.id})">Save Changes</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 							</div>
 						</form>
