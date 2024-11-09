@@ -1,7 +1,7 @@
 let listOfTasks = {};
 
 async function loadJSON(){
-    const url = (window.location.href + "static/data.json").replace("?", "")
+    const url = (window.location.href + "data").replace("?", "")
 
     try {
         await fetch(url).then(response => {
@@ -64,7 +64,7 @@ function addTask(){
     console.debug(data)
     
     listOfTasks.push(data)
-    fetch((window.location.href + "task"), {
+    fetch((`${window.location.href}task/`).replace("?", ""), {
         method: "POST",
         body: JSON.stringify(data),
         headers: {"Content-type": "application/json"}
@@ -92,7 +92,7 @@ function updateTask(id){
         listOfTasks[index] = data
     }
 
-    fetch((window.location.href + "task/" + id), {
+    fetch((`${window.location.href}task/${id}`).replace("?", ""), {
         method: "PATCH",
         body: JSON.stringify(data),
         headers: {"Content-type": "application/json"}

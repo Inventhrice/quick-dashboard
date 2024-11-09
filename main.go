@@ -239,10 +239,9 @@ func initRouter() *gin.Engine {
 	// Default routes for the static stuff
 	router.GET("/static/css/:name", serveCSS)
 	router.GET("/static/js/:name", serveScripts)
-
-	// Return the data stored server side
-	router.GET("/static/data.json", func(c *gin.Context) {
-		serveFiles(c, "application/json", pathToFile)
+	router.GET("/data", func(c *gin.Context) {
+		c.Header("Content-Type", "application/json")
+		c.JSON(http.StatusOK, tasksDB)
 	})
 
 	router.GET("/static/qr.png", func(c *gin.Context) {
