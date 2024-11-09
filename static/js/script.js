@@ -1,7 +1,7 @@
 let listOfTasks = {};
 
 async function loadJSON(){
-    const url = (window.location.href + "static/data.json").replace("?", "")
+    const url = (window.location.href + "data").replace("?", "")
 
     try {
         await fetch(url).then(response => {
@@ -64,7 +64,7 @@ function addTask(){
     console.debug(data)
     
     listOfTasks.push(data)
-    fetch((window.location.href + "task"), {
+    fetch((`${window.location.href}task/`).replace("?", ""), {
         method: "POST",
         body: JSON.stringify(data),
         headers: {"Content-type": "application/json"}
@@ -73,9 +73,9 @@ function addTask(){
 }
 
 function updateTask(id){
-    console.debug("ENTERING: updateTask(" + id + ")")
+    console.debug(`ENTERING: updateTask(${id})`)
 
-    const subElement = "taskform-" + id + "-"
+    const subElement = `taskform-${id}-`
 
     let data = {
         "id": id,
@@ -92,7 +92,7 @@ function updateTask(id){
         listOfTasks[index] = data
     }
 
-    fetch((window.location.href + "task/" + id), {
+    fetch((`${window.location.href}task/${id}`).replace("?", ""), {
         method: "PATCH",
         body: JSON.stringify(data),
         headers: {"Content-type": "application/json"}
@@ -104,7 +104,7 @@ function getListOfPeople(){
     const assignees = [...new Set([...(listOfTasks.map(task => task.assignee)).values()])];
     for(let j = 0; j < assignees.length; j++){
         
-        returnVal += `<option value="` + assignees[j] + `"></option>\n`
+        returnVal += `<option value="${assignees[j]}"></option>\n`
     }
     return returnVal
 }
@@ -119,11 +119,11 @@ function refreshTaskList(){
         theTaskInQuestion = listOfTasks[i]
         console.debug(theTaskInQuestion)
    
-        summaryViewTaskTemplate = `<div id="checklist-ID" class="checklistItem list-group list-group-item-action ps-2 pt-2 mb-2" data-bs-toggle="modal" data-bs-target="#taskID">`
-        summaryViewTaskTemplate = summaryViewTaskTemplate.replaceAll("ID", theTaskInQuestion.id);
-
-        summaryViewTaskTemplate += "\n<h5>" + theTaskInQuestion.taskTitle + "</h5>"
-                + "\n<i class=\"bi bi-person\"> " + theTaskInQuestion.assignee + "</i>\n</div>\n"
+        summaryViewTaskTemplate = 
+			`<div id="checklist-${theTaskInQuestion.id}" class="checklistItem list-group list-group-item-action ps-2 pt-2 mb-2" data-bs-toggle="modal" data-bs-target="#task${theTaskInQuestion.id}">
+				<h5>${theTaskInQuestion.taskTitle}</h5>
+                <i class=\"bi bi-person\">${theTaskInQuestion.assignee}</i>
+			</div>`
 
         if(theTaskInQuestion.complete == false){
             document.getElementById("checklist").innerHTML += summaryViewTaskTemplate;
@@ -135,32 +135,38 @@ function refreshTaskList(){
 
         // Code for the modal that pops up when clicking on the task
         
-        detailedViewTaskTemplate 
-            = `<div class="modal fade" id="task{{ID}}" tabindex="-1" aria-labelledby="task{{ID}}" aria-hidden="true">\n<div class="modal-dialog modal-dialog-centered">\n<div class="modalBackground modal-content">\n<form id="taskform-{{ID}}">`
-        // Modal Header Code
-            + `\n<div class="modal-header">\n<input type="text" class="form-control" id="taskform-{{ID}}-taskTitle" placeholder="Enter title of task" value="` 
-        
-        detailedViewTaskTemplate += theTaskInQuestion.taskTitle + `">\n<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>\n</div>\n`
-        // Assignee code
-            + `<div class="modal-body">\n<div class="input-group">\n<span id="taskform-{{ID}}-assignee-desc" for="taskform-{{ID}}-assignee" class="input-group-text"><i>Assigned to:</i></span>\n<input aria-described-by="taskform-{{ID}}-assignee-desc" type="text" class="form-control" id="taskform-{{ID}}-assignee" list="listOfUsers" placeholder="Enter a person's name" value="` 
-            + theTaskInQuestion.assignee + `"><datalist id="listOfUsers">\n`
-            + getListOfPeople()
-            + `</datalist>\n</div>\n<div>\n<label for="taskform-{{ID}}-description" class="form-label fs-5">Description:</label>\n<textarea class="form-control" rows="3" id="taskform-{{ID}}-description">`
-
-        if(theTaskInQuestion.description == ""){
-            detailedViewTaskTemplate += `No Description Provided`
-        }
-        else{
-            detailedViewTaskTemplate += theTaskInQuestion.description
-        }
-        detailedViewTaskTemplate += `</textarea>\n</div><div><input type="checkbox" class="form-check-input" id="taskform-{{ID}}-completed"`
-
-        if(theTaskInQuestion.complete) detailedViewTaskTemplate += " checked"
-
-        detailedViewTaskTemplate += `>\n<label for="taskform-1-completed" class="form-check-label">Complete</label>\n</div>\n</div>\n<div class="modal-footer">\n<button class="btn btn-success" data-bs-dismiss="modal" onclick="updateTask({{ID}})">Save Changes</button>`
-                                 + `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>\n</div>\n</form>\n</div>\n</div>\n</div>`
-
-        detailedViewTaskTemplate = detailedViewTaskTemplate.replaceAll("{{ID}}", theTaskInQuestion.id)
+        detailedViewTaskTemplate = 
+			`<div class="modal fade" id="task${theTaskInQuestion.id}" tabindex="-1" aria-labelledby="task${theTaskInQuestion.id}" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modalBackground modal-content">
+						<form id="taskform-${theTaskInQuestion.id}">
+							<div class="modal-header">
+								<input type="text" class="form-control" id="taskform-${theTaskInQuestion.id}-taskTitle" placeholder="Enter title of task" value="${theTaskInQuestion.taskTitle}">
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<div class="input-group">
+									<span id="taskform-${theTaskInQuestion.id}-assignee-desc" for="taskform-${theTaskInQuestion.id}-assignee" class="input-group-text"><i>Assigned to:</i></span>
+									<input aria-described-by="taskform-${theTaskInQuestion.id}-assignee-desc" type="text" class="form-control" id="taskform-${theTaskInQuestion.id}-assignee" list="listOfUsers" placeholder="Enter a person's name" value="${theTaskInQuestion.assignee}">
+									<datalist id="listOfUsers">${getListOfPeople()}</datalist>
+								</div>
+								<div>
+									<label for="taskform-${theTaskInQuestion.id}-description" class="form-label fs-5">Description:</label>
+									<textarea class="form-control" rows="3" id="taskform-${theTaskInQuestion.id}-description">${theTaskInQuestion.description == "" ? "No Description Provided" : theTaskInQuestion.description}</textarea>
+								</div>
+								<div>
+									<input type="checkbox" class="form-check-input" id="taskform-${theTaskInQuestion.id}-completed" ${theTaskInQuestion.complete ? " checked" : ""}>
+									<label for="taskform-${theTaskInQuestion.id}-completed" class="form-check-label">Complete</label>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-success" data-bs-dismiss="modal" onclick="updateTask(${theTaskInQuestion.id})">Save Changes</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>`
         document.getElementById("listTasks").innerHTML += detailedViewTaskTemplate;
     }
     
