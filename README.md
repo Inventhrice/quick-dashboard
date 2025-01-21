@@ -1,9 +1,7 @@
 # quick-dashboard
 
 ## What is this?
-A dashboard that doesnt need (or appear to need) a full web server stack. Something local, LAN, or BT that a person could imprompty pop up on a display for group work without standing up infra or internet security postures. Markdown or similar input, maybe a timer, check lists. Picture cleaning out a room with friends and having the action plan on a monitor
-
-Right down to who is eyes on a situation and who is doing background work; impromptu signage etc.
+A dashboard that does not need a full web server stack. It runs completely locally over a LAN so that a person could impromptu pop up on a display for group work without worrying about infrastructure or internet security postures. This project uses a JSON file to read in the list of tasks, and updates it at an interval (a default of 5 minutes). There is also an option to display a QR code to save on typing the complete URI.
 
 ## How do you use it?
 1. Follow the instructions under the **Usage** heading to download/build the application.
